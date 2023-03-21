@@ -35,3 +35,16 @@ test(addToCollection.name, () => {
   add('Dirty Horse', 'Marbin', 2022);
   console.log('Collection is', collection);
 });
+
+function showCollection(collection, name) {
+  console.group(`${name === undefined ? 'Collection' : `'${name}'`} has %o albums`, collection.length);
+  for (const album of collection) {
+    console.log(`${album.title} by ${album.artist}, published in ${album.yearPublished}`);
+  }
+  console.groupEnd();
+}
+
+test(showCollection.name, () => {
+  showCollection(collection);
+  showCollection(collection, 'My collection');
+});
