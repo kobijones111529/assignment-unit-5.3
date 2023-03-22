@@ -48,3 +48,31 @@ test(showCollection.name, () => {
   showCollection(collection);
   showCollection(collection, 'My collection');
 });
+
+function findByArtist(artist) {
+  let albums = [];
+  for (const album of collection) {
+    if (album.artist === artist)
+      albums.push(album);
+  }
+  return albums;
+}
+
+test(findByArtist.name, () => {
+  const findAndLog = artist => {
+    const found = findByArtist(artist);
+    if (found.length > 0)
+      console.log(
+        `Found %o album${found.length > 1 ? 's' : ''} by %s:`,
+        found.length,
+        artist,
+        found.length > 1 ? found : found[0]
+      );
+    else
+      console.log('Found %o albums by %s', 0, artist);
+  };
+  console.log('Collection is', collection);
+  findAndLog('Marbin');
+  findAndLog('Cö Shu Nie');
+  findAndLog('Ryo Fukui');
+});
