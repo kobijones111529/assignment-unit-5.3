@@ -76,3 +76,36 @@ test(findByArtist.name, () => {
   findAndLog('Cö Shu Nie');
   findAndLog('Ryo Fukui');
 });
+
+function search(criteria) {
+  return collection.filter(album =>
+    Object
+      .entries(criteria ?? {})
+      .map(([k, v]) => album[k] === v)
+      .reduce((a, b) => a && b, true)
+  );
+}
+
+test(search.name, () => {
+  const searchAndLog = criteria => {
+    const found = search(criteria);
+    switch (found.length) {
+      case 0:
+        console.log('Found %o albums matching %o', 0, criteria);
+        break;
+      case 1:
+        console.log('Found %o album matching %o:', 1, criteria, found[0]);
+        break;
+      default:
+        console.log('Found %o albums matching %o:', found.length, criteria, found);
+        break;
+    }
+  };
+  console.log('Collection is', collection);
+  searchAndLog({});
+  searchAndLog();
+  searchAndLog({ artist: 'Marbin' });
+  searchAndLog({ artist: '惑星アブノーマル', yearPublished: 2018 });
+  searchAndLog({ artist: '惑星アブノーマル', yearPublished: 1 });
+  searchAndLog({ title: 'NUMBER SEVEN', artist: 'THE PINBALLS', yearPublished: 2017 });
+});
