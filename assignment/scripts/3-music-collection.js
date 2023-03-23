@@ -71,15 +71,17 @@ function findByArtist(artist) {
 test(findByArtist.name, () => {
   const findAndLog = artist => {
     const found = findByArtist(artist);
-    if (found.length > 0)
-      console.log(
-        `Found %o album${found.length > 1 ? 's' : ''} by %s:`,
-        found.length,
-        artist,
-        found.length > 1 ? found : found[0]
-      );
-    else
-      console.log('Found %o albums by %s', 0, artist);
+    switch (found.length) {
+      case 0:
+        console.log('Found %o albums by %s', 0, artist);
+        break;
+      case 1:
+        console.log('Found %o album by %s:', 1, artist, found[0]);
+        break;
+      default:
+        console.log('Found %o albums by %s:', found.length, artist, found);
+        break;
+    }
   };
   console.log('Collection is', collection);
   findAndLog('Marbin');
