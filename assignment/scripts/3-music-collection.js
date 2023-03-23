@@ -88,17 +88,21 @@ test(findByArtist.name, () => {
 });
 
 function search(criteria) {
-  const entries = Object.entries(criteria ?? {});
-  const byTrackName = new Map(entries).has('trackName');
+  const searchKeys = Object.keys(criteria ?? {});
   return collection.filter(album => {
-    if (byTrackName) {
+    if (searchKeys.includes('trackName')) {
       return album.tracks.filter(track =>
         track.name === criteria.trackName
       ).length > 0;
     } else {
-      return entries
-        .map(([k, v]) => album[k] === v)
-        .reduce((a, b) => a && b, true);
+      return [
+        searchKeys.includes('artist') ?
+          album.artist === criteria.artist :
+          true,
+        searchKeys.includes('year') ?
+          album.yearPublished === criteria.year :
+          true
+      ].reduce((a, b) => a && b, true);
     }
   });
 }
@@ -122,9 +126,9 @@ test(search.name, () => {
   searchAndLog({});
   searchAndLog();
   searchAndLog({ artist: 'Marbin' });
-  searchAndLog({ artist: '惑星アブノーマル', yearPublished: 2018 });
-  searchAndLog({ artist: '惑星アブノーマル', yearPublished: 1 });
-  searchAndLog({ title: 'NUMBER SEVEN', artist: 'THE PINBALLS', yearPublished: 2017 });
+  searchAndLog({ artist: '惑星アブノーマル', year: 2018 });
+  searchAndLog({ artist: '惑星アブノーマル', year: 1 });
+  searchAndLog({ title: 'NUMBER SEVEN', artist: 'THE PINBALLS', year: 2017 });
   searchAndLog({ trackName: 'Swamp House' });
   searchAndLog({ trackName: 'Swamp House', artist: 'Bill Evans' });
   searchAndLog({ trackName: 'Peace Piece' });
