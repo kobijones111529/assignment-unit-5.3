@@ -8,38 +8,48 @@ const test = (name, test) => {
 
 let collection = [];
 
-function addToCollection(title, artist, yearPublished) {
+function addToCollection(title, artist, yearPublished, tracks) {
   const album = {
     title: title,
     artist: artist,
-    yearPublished: yearPublished
+    yearPublished: yearPublished,
+    tracks: tracks
   };
   collection.push(album);
   return album;
 }
 
 test(addToCollection.name, () => {
-  const add = (title, artist, year) => {
+  const add = (title, artist, year, tracks) => {
     console.log(
       'Added %o to collection',
-      addToCollection(title, artist, year)
+      addToCollection(title, artist, year, tracks)
     );
   };
   collection = [];
   console.log('Collection is', collection);
-  add('Swamp House', 'Marbin', 2023);
-  add('We Like It Here', 'Snarky Puppy', 2014);
-  add('Scenery', 'Ryo Fukui', 1976);
-  add('私は怒りでできている', '惑星アブノーマル', 2018);
-  add('NUMBER SEVEN', 'THE PINBALLS', 2017);
-  add('Dirty Horse', 'Marbin', 2022);
+  add('Swamp House', 'Marbin', 2023, [{ name: 'Swamp House', duration: 513 }]);
+  add('We Like It Here', 'Snarky Puppy', 2014, []);
+  add('Scenery', 'Ryo Fukui', 1976, []);
+  add('私は怒りでできている', '惑星アブノーマル', 2018, []);
+  add('NUMBER SEVEN', 'THE PINBALLS', 2017, []);
+  add('Dirty Horse', 'Marbin', 2022, []);
   console.log('Collection is', collection);
 });
 
 function showCollection(collection, name) {
   console.group(`${name === undefined ? 'Collection' : `'${name}'`} has %o albums`, collection.length);
   for (const album of collection) {
-    console.log(`${album.title} by ${album.artist}, published in ${album.yearPublished}`);
+    const msg = `${album.title} by ${album.artist}, published in ${album.yearPublished}`;
+    if (album.tracks.length > 0) {
+      console.group(`${msg}:`);
+      album.tracks.forEach((element, index) => {
+        console.log(`${index + 1}. ${element.name}: %o:%o`, Math.floor(element.duration / 60), element.duration % 60);
+      });
+      console.groupEnd();
+    } else {
+      console.log(msg);
+    }
   }
   console.groupEnd();
 }
@@ -78,12 +88,19 @@ test(findByArtist.name, () => {
 });
 
 function search(criteria) {
-  return collection.filter(album =>
-    Object
-      .entries(criteria ?? {})
-      .map(([k, v]) => album[k] === v)
-      .reduce((a, b) => a && b, true)
-  );
+  const entries = Object.entries(criteria ?? {});
+  const byTrackName = new Map(entries).has('trackName');
+  return collection.filter(album => {
+    if (byTrackName) {
+      return album.tracks.filter(track =>
+        track.name === criteria.trackName
+      ).length > 0;
+    } else {
+      return entries
+        .map(([k, v]) => album[k] === v)
+        .reduce((a, b) => a && b, true);
+    }
+  });
 }
 
 test(search.name, () => {
@@ -108,4 +125,7 @@ test(search.name, () => {
   searchAndLog({ artist: '惑星アブノーマル', yearPublished: 2018 });
   searchAndLog({ artist: '惑星アブノーマル', yearPublished: 1 });
   searchAndLog({ title: 'NUMBER SEVEN', artist: 'THE PINBALLS', yearPublished: 2017 });
+  searchAndLog({ trackName: 'Swamp House' });
+  searchAndLog({ trackName: 'Swamp House', artist: 'Bill Evans' });
+  searchAndLog({ trackName: 'Peace Piece' });
 });
