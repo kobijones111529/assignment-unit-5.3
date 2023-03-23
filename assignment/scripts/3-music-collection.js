@@ -38,13 +38,21 @@ test(addToCollection.name, () => {
 });
 
 function showCollection(collection, name) {
-  console.group(`${name === undefined ? 'Collection' : `'${name}'`} has %o albums`, collection.length);
+  console.group(
+    `%s has %o album${collection.length === 1 ? '' : 's'}`,
+    name === undefined ? 'Collection' : `'${name}'`,
+    collection.length
+  );
   for (const album of collection) {
     const msg = `${album.title} by ${album.artist}, published in ${album.yearPublished}`;
     if (album.tracks.length > 0) {
       console.group(`${msg}:`);
-      album.tracks.forEach((element, index) => {
-        console.log(`${index + 1}. ${element.name}: %o:%o`, Math.floor(element.duration / 60), element.duration % 60);
+      album.tracks.forEach((track, index) => {
+        console.log(
+          `${index + 1}. ${track.name}: %o:%o`,
+          Math.floor(track.duration / 60),
+          track.duration % 60
+        );
       });
       console.groupEnd();
     } else {
