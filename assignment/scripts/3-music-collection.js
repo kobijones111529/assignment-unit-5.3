@@ -1,5 +1,10 @@
 console.log('***** Music Collection *****');
 
+/**
+ * Run a test
+ * @param {string} name Name of the test
+ * @param {Function} test Function to run
+ */
 const test = (name, test) => {
   console.group('Testing', name);
   test();
@@ -8,6 +13,14 @@ const test = (name, test) => {
 
 let collection = [];
 
+/**
+ * Add an album to the collection
+ * @param {string} title Title
+ * @param {string} artist Artist
+ * @param {number} yearPublished Year of publication
+ * @param {Array} tracks Array of tracks in the album
+ * @returns Album added to collection
+ */
 function addToCollection(title, artist, yearPublished, tracks) {
   const album = {
     title: title,
@@ -37,6 +50,11 @@ test(addToCollection.name, () => {
   console.log('Collection is', collection);
 });
 
+/**
+ * Display collection neatly in console
+ * @param {Array} collection Collection to display
+ * @param {string | undefined} name Optional name of the collection
+ */
 function showCollection(collection, name) {
   console.group(
     `%s has %o album${collection.length === 1 ? '' : 's'}`,
@@ -45,8 +63,10 @@ function showCollection(collection, name) {
   );
   for (const album of collection) {
     const msg = `${album.title} by ${album.artist}, published in ${album.yearPublished}`;
+    // Only create console group if tracks in non-empty
     if (album.tracks.length > 0) {
       console.group(`${msg}:`);
+      // Display each track on a separate line
       album.tracks.forEach((track, index) => {
         console.log(
           `${index + 1}. ${track.name}: %o:%o`,
@@ -67,6 +87,11 @@ test(showCollection.name, () => {
   showCollection(collection, 'My collection');
 });
 
+/**
+ * Get all albums by an artist
+ * @param {string} artist Artist to search by
+ * @returns {any[]} Array of albums by artist
+ */
 function findByArtist(artist) {
   let albums = [];
   for (const album of collection) {
@@ -97,14 +122,22 @@ test(findByArtist.name, () => {
   findAndLog('Ryo Fukui');
 });
 
+/**
+ * Search collection based on multiple criteria
+ * @param {*} criteria Search criteria object (all match)
+ * @returns Array of matching albums
+ */
 function search(criteria) {
   const searchKeys = Object.keys(criteria ?? {});
+  // Filter albums by match with criteria
   return collection.filter(album => {
+    // Search exclusively by track name if present
     if (searchKeys.includes('trackName')) {
       return album.tracks.filter(track =>
         track.name === criteria.trackName
       ).length > 0;
     } else {
+      // Array of matches, reduce on logical 'and'
       return [
         searchKeys.includes('artist') ?
           album.artist === criteria.artist :
