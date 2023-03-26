@@ -24,9 +24,9 @@ let collection = [];
 function addToCollection(title, artist, yearPublished, tracks) {
   const album = {
     title: title,
-    artist: artist,
-    yearPublished: yearPublished,
-    tracks: tracks
+    artist,
+    yearPublished,
+    tracks
   };
   collection.push(album);
   return album;
@@ -93,10 +93,9 @@ test(showCollection.name, () => {
  * @returns {any[]} Array of albums by artist
  */
 function findByArtist(artist) {
-  let albums = [];
+  const albums = [];
   for (const album of collection) {
-    if (album.artist === artist)
-      albums.push(album);
+    if (album.artist === artist) { albums.push(album); }
   }
   return albums;
 }
@@ -139,12 +138,12 @@ function search(criteria) {
     } else {
       // Array of matches, reduce on logical 'and'
       return [
-        searchKeys.includes('artist') ?
-          album.artist === criteria.artist :
-          true,
-        searchKeys.includes('year') ?
-          album.yearPublished === criteria.year :
-          true
+        searchKeys.includes('artist')
+          ? album.artist === criteria.artist
+          : true,
+        searchKeys.includes('year')
+          ? album.yearPublished === criteria.year
+          : true
       ].reduce((a, b) => a && b, true);
     }
   });
